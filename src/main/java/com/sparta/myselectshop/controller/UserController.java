@@ -20,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @Slf4j
@@ -28,8 +29,8 @@ import java.util.List;
 @RequestMapping("/api")
 public class UserController {
 
-    private final UserService userService ;
-    private final FolderService folderService ;
+    private final UserService userService;
+    private final FolderService folderService;
     private final KakaoService kakaoService;
 
     @GetMapping("/user/login-page")
@@ -68,7 +69,7 @@ public class UserController {
 
         return new UserInfoDto(username, isAdmin);
     }
-    // 로그인 한 유저가 메인 페이지를 요청할 때 가지고있는 폴더를 반환
+
     @GetMapping("/user-folder")
     public String getUserInfo(Model model, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
@@ -76,11 +77,12 @@ public class UserController {
 
         return "index :: #fragment";
     }
+
     @GetMapping("/user/kakao/callback")
     public String kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
         String token = kakaoService.kakaoLogin(code);
 
-        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, token);
+        Cookie cookie = new Cookie(JwtUtil.AUTHORIZATION_HEADER, token.substring(7));
         cookie.setPath("/");
         response.addCookie(cookie);
 
